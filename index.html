@@ -6,38 +6,37 @@
 
 <body>
     <h5>Brownian noise</h5>
-    <span id="warning">WARNING: audio starting in a couple of seconds...</span>
+    <button onclick="start()" id="btnStart">Start</button>
     <br />
     <input type="range" min="20" max="400" value="60" class="slider" id="gainCompRange">
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', () => {
-            window.setTimeout(() => {
-                document.getElementById('warning').remove();
+            var gainCompSlider = document.getElementById("gainCompRange");
 
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-
-                var gainCompSlider = document.getElementById("gainCompRange");
-
-                const audioContext = new AudioContext();
-                var bufferSize = 4096;
-                // Courtesy of https://noisehack.com/generate-noise-web-audio-api/
-                var brownNoiseGen = (function () {
-                    var lastOut = 0.0;
-                    var node = audioContext.createScriptProcessor(bufferSize, 1, 1);
-                    node.onaudioprocess = function (e) {
-                        var output = e.outputBuffer.getChannelData(0);
-                        for (var i = 0; i < bufferSize; i++) {
-                            var white = Math.random() * 2 - 1;
-                            output[i] = (lastOut + (0.02 * white)) / 1.02;
-                            lastOut = output[i];
-                            output[i] *= parseInt(gainCompSlider.value) / 100.0; // (roughly) compensate for gain
-                        }
+            const audioContext = new AudioContext();
+            var bufferSize = 4096;
+            // Courtesy of https://noisehack.com/generate-noise-web-audio-api/
+            var brownNoiseGen = (function () {
+                var lastOut = 0.0;
+                var node = audioContext.createScriptProcessor(bufferSize, 1, 1);
+                node.onaudioprocess = function (e) {
+                    var output = e.outputBuffer.getChannelData(0);
+                    for (var i = 0; i < bufferSize; i++) {
+                        var white = Math.random() * 2 - 1;
+                        output[i] = (lastOut + (0.02 * white)) / 1.02;
+                        lastOut = output[i];
+                        output[i] *= parseInt(gainCompSlider.value) / 100.0; // (roughly) compensate for gain
                     }
-                    return node;
-                })();
+                }
+                return node;
+            })();
 
-                brownNoiseGen.connect(audioContext.destination);
-            }, 3000);
+            document.getElementById('btnStart').onclick = () => {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                brownNoiseGen.connect(audioContext.destination)
+            };
+
+            //brownNoiseGen.connect(audioContext.destination);
         });
     </script>
 </body>
