@@ -6,7 +6,6 @@
 
 <body>
     <h5>Brownian noise</h5>
-    <button id="btnStart">Start</button>
     <br />
     <input type="range" min="20" max="400" value="60" class="slider" id="gainCompRange">
     <script type="text/javascript">
@@ -31,10 +30,8 @@
             }
             return node;
         })();
+        brownNoiseGen.connect(audioContext.destination)
 
-        document.getElementById('btnStart').onclick = () => {
-            brownNoiseGen.connect(audioContext.destination)
-        };
     </script>
 </body>
 
