@@ -30,7 +30,11 @@
             }
             return node;
         })();
-        brownNoiseGen.connect(audioContext.destination)
+
+        const gainNode = audioContext.createGain();
+        gainNode.connect(audioContext.destination);
+        gainNode.gain.value = 1;
+        brownNoiseGen.connect(gainNode)
 
     </script>
 </body>
